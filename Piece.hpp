@@ -7,7 +7,7 @@ private :
    bool moved;
 public : 
    Piece(bool isWhite);
-   ~Piece();
+   //~Piece();
 
    bool isWhite();
    char getSymbol();

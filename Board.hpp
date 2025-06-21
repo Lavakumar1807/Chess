@@ -14,7 +14,7 @@ public :
     void displayBoard();
     
     void makeMove();
-    bool isCheck();   
+    bool isCheck(bool whiteTurn);   
     bool isCheckmate();
 
     void switchTurn();

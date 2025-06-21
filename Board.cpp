@@ -158,8 +158,64 @@ void Board::makeMove(){
     }
 }
 
-bool Board::isCheckmate(){
+bool Board::isCheck(bool whiteTurn){
+    int kingRowPosition,kingColPosition;
+    bool foundKing = false;
+
+    for(int row = 0;row < 8 && !foundKing;row++){
+        for(int col = 0;col < 8 && !foundKing;col++){
+            if((whiteTurn && board[row][col]->getSymbol() == 'K') || (!whiteTurn && board[row][col]->getSymbol() == 'k')){
+                kingRowPosition = row;
+                kingColPosition = col;
+                foundKing = true;
+                break;
+            }
+        }
+    }
+
+     for (int row = 0; row < 8; row++) {
+        for (int col = 0; col < 8; col++) {
+            Piece* attacker = board[row][col];
+            if (attacker != nullptr && attacker->isWhite() != whiteTurn) {
+                if (attacker->isValidMove(row, col, kingRowPosition, kingColPosition, board)) {
+                    return true; 
+                }
+            }
+        }
+    }
+
     return false;
+}
+
+bool Board::isCheckmate(){
+    if(!isCheck(whiteTurn)) return false;
+
+    for (int fromRow = 0; fromRow < 8; fromRow++) {
+        for (int fromCol = 0; fromCol < 8; fromCol++) {
+            Piece* piece = board[fromRow][fromCol];
+
+            if (piece != nullptr && piece->isWhite() == isWhiteTurn()) {
+                for (int toRow = 0; toRow < 8; toRow++) {
+                    for (int toCol = 0; toCol < 8; toCol++) {
+                        if (piece->isValidMove(fromRow, fromCol, toRow, toCol, board)) {
+                            Piece* captured = board[toRow][toCol];
+                            board[toRow][toCol] = piece;
+                            board[fromRow][fromCol] = nullptr;
+
+                            bool stillInCheck = isCheck(isWhiteTurn());
+
+                            board[fromRow][fromCol] = piece;
+                            board[toRow][toCol] = captured;
+
+                            if (!stillInCheck) return false;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return true;
 }
 
 void Board::endGame(char winner) {

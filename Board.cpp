@@ -7,6 +7,23 @@ using namespace std;
 // (true) --> White Piece
 // (false) --> Black Piece
 
+// Factory Design Pattern
+class PieceFactory {
+public:
+    static Piece* createPiece(const string& type, bool isWhite) {
+        if (type == "pawn") return new Pawn(isWhite);
+        else if (type == "rook") return new Rook(isWhite);
+        else if (type == "knight") return new Knight(isWhite);
+        else if (type == "bishop") return new Bishop(isWhite);
+        else if (type == "queen") return new Queen(isWhite);
+        else if (type == "king") return new King(isWhite);
+        else {
+            cerr << "Invalid piece type: " << type << endl;
+            return nullptr;
+        }
+    }
+};
+
 Board::Board(){
     whiteTurn = true;
 
@@ -17,35 +34,35 @@ Board::Board(){
     }
 
     for(int col = 0;col < 8; col++){
-        board[1][col] = new Pawn(true);
-        board[6][col] = new Pawn(false);
+        board[1][col] = PieceFactory::createPiece("pawn",true);
+        board[6][col] = PieceFactory::createPiece("pawn",false);
     }
 
     // King
-    board[0][3] = new King(true);
-    board[7][3] = new King(false);
+    board[0][3] = PieceFactory::createPiece("king",true);
+    board[7][3] = PieceFactory::createPiece("king",false);
 
     // Queen
-    board[0][4] = new Queen(true);
-    board[7][4] = new Queen(false);
+    board[0][4] = PieceFactory::createPiece("queen",true);
+    board[7][4] = PieceFactory::createPiece("queen",false);
 
     // Rooks
-    board[0][0] = new Rook(true);
-    board[0][7] = new Rook(true);
-    board[7][0] = new Rook(false);
-    board[7][7] = new Rook(false);
+    board[0][0] = PieceFactory::createPiece("rook",true);
+    board[0][7] = PieceFactory::createPiece("rook",true);
+    board[7][0] = PieceFactory::createPiece("rook",false);
+    board[7][7] = PieceFactory::createPiece("rook",false);
 
     // Knight
-    board[0][1] = new Knight(true);
-    board[0][6] = new Knight(true);
-    board[7][1] = new Knight(false);
-    board[7][6] = new Knight(false);
+    board[0][1] = PieceFactory::createPiece("knight",true);
+    board[0][6] = PieceFactory::createPiece("knight",true);
+    board[7][1] = PieceFactory::createPiece("knight",false);
+    board[7][6] = PieceFactory::createPiece("knight",false);
 
     // Bishop
-    board[0][2] = new Bishop(true);
-    board[0][5] = new Bishop(true);
-    board[7][2] = new Bishop(false);
-    board[7][5] = new Bishop(false);
+    board[0][2] = PieceFactory::createPiece("bishop",true);
+    board[0][5] = PieceFactory::createPiece("bishop",true);
+    board[7][2] = PieceFactory::createPiece("bishop",false);
+    board[7][5] = PieceFactory::createPiece("bishop",false);
 }
 
 void Board::displayBoard() {

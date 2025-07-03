@@ -1,5 +1,7 @@
 #pragma once
 
+class Board;
+
 class Piece{
 private : 
    bool white;
@@ -15,5 +17,5 @@ public :
    bool isMoved();
    void setMoved(bool moved);
 
-   virtual bool isValidMove(int fromRow, int fromCol, int toRow, int toCol, Piece* board[8][8]) = 0;
+   virtual bool isValidMove(int fromRow, int fromCol, int toRow, int toCol, Board* board) = 0;
 };

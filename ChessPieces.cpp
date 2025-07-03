@@ -1,7 +1,9 @@
 #include<bits/stdc++.h>
 #include "Piece.hpp"
+#include "Board.hpp"
 
 using namespace std;
+
 
 // Pawn
 class Pawn : public Piece {
@@ -10,7 +12,7 @@ public :
       setSymbol(isWhite ? 'P' : 'p');
     }
 
-    bool isValidMove(int fromRow, int fromCol, int toRow, int toCol, Piece* board[8][8]){
+    bool isValidMove(int fromRow, int fromCol, int toRow, int toCol, Board* board){
         if(toRow == fromRow && toCol == fromCol) return false;
         if (toRow < 0 || toRow >= 8 || toCol < 0 || toCol >= 8) return false;
 
@@ -25,12 +27,12 @@ public :
             }
 
             if(firstMove && rowDiff <=2  && toCol == fromCol){
-                if(rowDiff == 2 && (board[toRow][toCol] != nullptr || board[fromRow + 1][toCol] != nullptr)) return false;
-                else if(rowDiff ==1 && board[toRow][toCol] != nullptr) return false;
+                if(rowDiff == 2 && (board->getPieceAt(toRow,toCol) != nullptr || board->getPieceAt(fromRow + 1,toCol) != nullptr)) return false;
+                else if(rowDiff ==1 && board->getPieceAt(toRow,toCol) != nullptr) return false;
                 return true;
             }
 
-            if (rowDiff == 1 && toCol == fromCol && board[toRow][toCol] == nullptr) {
+            if (rowDiff == 1 && toCol == fromCol && board->getPieceAt(toRow,toCol) == nullptr) {
                 return true;
             }
             return false;
@@ -42,12 +44,12 @@ public :
             }
 
             if(firstMove && rowDiff <=2  && toCol == fromCol){
-                if(rowDiff == 2 && (board[toRow][toCol] != nullptr || board[fromRow - 1][toCol] != nullptr)) return false;
-                else if(rowDiff ==1 && board[toRow][toCol] != nullptr) return false;
+                if(rowDiff == 2 && (board->getPieceAt(toRow,toCol) != nullptr || board->getPieceAt(fromRow + 1,toCol) != nullptr)) return false;
+                else if(rowDiff ==1 && board->getPieceAt(toRow,toCol) != nullptr) return false;
                 return true;
             }
             
-            if (rowDiff == 1 && toCol == fromCol && board[toRow][toCol] == nullptr) {
+            if (rowDiff == 1 && toCol == fromCol && board->getPieceAt(toRow,toCol) == nullptr) {
                 return true;
             }
             return false;
@@ -62,7 +64,7 @@ public :
       setSymbol(isWhite ? 'K' : 'k');
     }
 
-    bool isValidMove(int fromRow, int fromCol, int toRow, int toCol, Piece* board[8][8]){
+    bool isValidMove(int fromRow, int fromCol, int toRow, int toCol,  Board* board){
         if(toRow == fromRow && toCol == fromCol) return false;
         if (toRow < 0 || toRow >= 8 || toCol < 0 || toCol >= 8) return false;
 
@@ -71,7 +73,7 @@ public :
 
         if (max(rowDiff, colDiff) != 1) return false;
 
-        if (board[toRow][toCol] != nullptr && board[toRow][toCol]->isWhite() == this->isWhite())
+        if (board->getPieceAt(toRow,toCol) != nullptr && board->getPieceAt(toRow,toCol)->isWhite() == this->isWhite())
             return false;
 
         return true;
@@ -85,7 +87,7 @@ public :
       setSymbol(isWhite ? 'Q' : 'q');
     }
 
-    bool isValidMove(int fromRow, int fromCol, int toRow, int toCol, Piece* board[8][8]){
+    bool isValidMove(int fromRow, int fromCol, int toRow, int toCol,  Board* board){
        if(toRow == fromRow && toCol == fromCol) return false;
        if (toRow < 0 || toRow >= 8 || toCol < 0 || toCol >= 8) return false;
        
@@ -97,11 +99,11 @@ public :
 
          if(toCol > fromCol){
             for(int column = fromCol + 1; column < toCol; column++){
-                if(board[fromRow][column] != nullptr) return false;
+                if(board->getPieceAt(fromRow,column) != nullptr) return false;
             }
          }else{
             for(int column = fromCol - 1; column > toCol; column--){
-                if(board[fromRow][column] != nullptr) return false;
+                if(board->getPieceAt(fromRow,column) != nullptr) return false;
             }
          }
        }else if(toCol == fromCol){
@@ -109,11 +111,11 @@ public :
 
           if(toRow > fromRow){
             for(int row = fromRow + 1; row < toRow; row++){
-                if(board[row][fromCol] != nullptr) return false;
+                if(board->getPieceAt(row,fromCol) != nullptr) return false;
             }
           }else{
              for(int row = fromRow - 1; row > toRow; row--){
-                if(board[row][fromCol] != nullptr) return false;
+                if(board->getPieceAt(row,fromCol)  != nullptr) return false;
             }
           }
        }else if(rowDiff == colDiff){
@@ -121,24 +123,24 @@ public :
 
           if(toRow < fromRow  && toCol > fromCol){
             for(int diff = 1;diff < rowDiff; diff++){
-                if(board[fromRow - diff][fromCol + diff] != nullptr) return false;
+                if(board->getPieceAt(fromRow - diff,fromCol + diff) != nullptr) return false;
             }
           }else if(toRow < fromRow && toCol < fromCol){
             for(int diff = 1; diff < rowDiff; diff++){
-                if(board[fromRow - diff][fromCol - diff] != nullptr) return false;
+                if(board->getPieceAt(fromRow - diff,fromCol - diff) != nullptr) return false;
             }
           }else if(toRow > fromRow && toCol < fromCol){
             for(int diff = 1; diff < rowDiff; diff++){
-                if(board[fromRow + diff][fromCol - diff] != nullptr) return false;
+                if(board->getPieceAt(fromRow + diff,fromCol - diff) != nullptr) return false;
             }
           }else if(toRow > fromRow && toCol > fromCol){
             for(int diff = 1;diff < rowDiff; diff++){
-                if(board[fromRow + diff][fromCol + diff] != nullptr) return false;
+                if(board->getPieceAt(fromRow + diff,fromCol + diff) != nullptr) return false;
             }
           }
        }else return false;
 
-       if (board[toRow][toCol] != nullptr && board[toRow][toCol]->isWhite() == this->isWhite()) return false;
+       if (board->getPieceAt(toRow,toCol) != nullptr && board->getPieceAt(toRow,toCol)->isWhite() == this->isWhite()) return false;
 
        return true;
     }
@@ -151,7 +153,7 @@ public :
        setSymbol(isWhite ? 'B' : 'b');
     }
 
-    bool isValidMove(int fromRow, int fromCol, int toRow, int toCol, Piece* board[8][8]){
+    bool isValidMove(int fromRow, int fromCol, int toRow, int toCol,  Board* board){
         if(toRow == fromRow && toCol == fromCol) return false;
         if (toRow < 0 || toRow >= 8 || toCol < 0 || toCol >= 8) return false;
 
@@ -163,24 +165,24 @@ public :
         // Diagonal Movement
         if(toRow < fromRow  && toCol > fromCol){
             for(int diff = 1;diff < rowDiff; diff++){
-                if(board[fromRow - diff][fromCol + diff] != nullptr) return false;
+                if(board->getPieceAt(fromRow - diff,fromCol + diff) != nullptr) return false;
             }
         }else if(toRow < fromRow && toCol < fromCol){
             for(int diff = 1; diff < rowDiff; diff++){
-                if(board[fromRow - diff][fromCol - diff] != nullptr) return false;
+                if(board->getPieceAt(fromRow - diff,fromCol - diff) != nullptr) return false;
             }
         }else if(toRow > fromRow && toCol < fromCol){
             for(int diff = 1; diff < rowDiff; diff++){
-                if(board[fromRow + diff][fromCol - diff] != nullptr) return false;
+                if(board->getPieceAt(fromRow + diff,fromCol - diff) != nullptr) return false;
             }
         }else if(toRow > fromRow && toCol > fromCol){
             for(int diff = 1;diff < rowDiff; diff++){
-                if(board[fromRow + diff][fromCol + diff] != nullptr) return false;
+                if(board->getPieceAt(fromRow + diff,fromCol + diff) != nullptr) return false;
             }
         }else return false;
 
 
-        if (board[toRow][toCol] != nullptr && board[toRow][toCol]->isWhite() == this->isWhite()) return false;
+        if (board->getPieceAt(toRow,toCol) != nullptr && board->getPieceAt(toRow,toCol) ->isWhite() == this->isWhite()) return false;
 
         return true; 
     }
@@ -193,7 +195,7 @@ public :
       setSymbol(isWhite ? 'N' : 'n');
     }
 
-    bool isValidMove(int fromRow, int fromCol, int toRow, int toCol, Piece* board[8][8]){
+    bool isValidMove(int fromRow, int fromCol, int toRow, int toCol,  Board* board){
        if(toRow == fromRow && toCol == fromCol) return false;
        if (toRow < 0 || toRow >= 8 || toCol < 0 || toCol >= 8) return false;
 
@@ -202,7 +204,7 @@ public :
         
        if (!((rowDiff == 2 && colDiff == 1) || (rowDiff == 1 && colDiff == 2))) return false;
 
-       if (board[toRow][toCol] != nullptr && board[toRow][toCol]->isWhite() == this->isWhite()) return false;
+       if (board->getPieceAt(toRow,toCol)  != nullptr && board->getPieceAt(toRow,toCol)->isWhite() == this->isWhite()) return false;
 
        return true; 
     }
@@ -215,7 +217,7 @@ public :
       setSymbol(isWhite ? 'R' : 'r');
     }
 
-    bool isValidMove(int fromRow, int fromCol, int toRow, int toCol, Piece* board[8][8]){
+    bool isValidMove(int fromRow, int fromCol, int toRow, int toCol,  Board* board){
        if(toRow == fromRow && toCol == fromCol) return false;
        if (toRow < 0 || toRow >= 8 || toCol < 0 || toCol >= 8) return false;
 
@@ -224,11 +226,11 @@ public :
 
          if(toCol > fromCol){
             for(int column = fromCol + 1; column < toCol; column++){
-                if(board[fromRow][column] != nullptr) return false;
+                if(board->getPieceAt(fromRow,column) != nullptr) return false;
             }
          }else{
             for(int column = fromCol - 1; column > toCol; column--){
-                if(board[fromRow][column] != nullptr) return false;
+                if(board->getPieceAt(fromRow,column) != nullptr) return false;
             }
          }
        }else if(toCol == fromCol){
@@ -236,16 +238,16 @@ public :
 
           if(toRow > fromRow){
             for(int row = fromRow + 1; row < toRow; row++){
-                if(board[row][fromCol] != nullptr) return false;
+                if(board->getPieceAt(row,fromCol) != nullptr) return false;
             }
           }else{
              for(int row = fromRow - 1; row > toRow; row--){
-                if(board[row][fromCol] != nullptr) return false;
+                if(board->getPieceAt(row,fromCol) != nullptr) return false;
             }
           }
        }else return false;
 
-       if (board[toRow][toCol] != nullptr && board[toRow][toCol]->isWhite() == this->isWhite()) return false;
+       if (board->getPieceAt(toRow,toCol) != nullptr && board->getPieceAt(toRow,toCol)->isWhite() == this->isWhite()) return false;
 
        return true; 
     }

@@ -1,25 +1,32 @@
 #include<bits/stdc++.h>
 #include "Board.hpp"
+#include "GameController.hpp"
+#include "RuleChecker.hpp"
 
 using namespace std;
 
 int main(){
-    Board chessBoard;
-    chessBoard.startGame();
-    chessBoard.displayBoard();
+    Board* chessBoard = new Board();
+    GameController gameController(chessBoard);
+    RuleChecker ruleChecker;
+
+    gameController.startGame();
+    chessBoard->displayBoard();
 
     while(true){
-        chessBoard.makeMove();
-        chessBoard.switchTurn();
+        gameController.makeMove();
+        gameController.switchTurn();
 
-        if(chessBoard.isCheckmate()){
-            chessBoard.displayBoard();
-            char winner = chessBoard.isWhiteTurn() ? 'B' : 'W';
-            chessBoard.endGame(winner);
+        bool turn = gameController.isWhiteTurn();
+
+        if(ruleChecker.isCheckmate(chessBoard,turn)){
+            chessBoard->displayBoard();
+            char winner = gameController.isWhiteTurn() ? 'B' : 'W';
+            gameController.endGame(winner);
             break;
         }
 
-        chessBoard.displayBoard();
+        chessBoard->displayBoard();
     }
 
     return 0;

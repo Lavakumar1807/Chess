@@ -3,20 +3,13 @@
 
 class Board{
 private :
-    bool whiteTurn;
-    Piece* board[8][8];
+    Piece* boardPieces[8][8];
 public : 
     Board();
     ~Board();
 
-    void startGame();
-    void endGame(char winner);
     void displayBoard();
-    
-    void makeMove();
-    bool isCheck(bool whiteTurn);   
-    bool isCheckmate();
 
-    void switchTurn();
-    bool isWhiteTurn();
+    Piece* getPieceAt(int row, int col);
+    void setPieceAt(int row, int col, Piece* piece);
 };

@@ -7,53 +7,48 @@ using namespace std;
 
 // Pawn
 class Pawn : public Piece {
-public :
-    Pawn(bool isWhite): Piece(isWhite){
-      setSymbol(isWhite ? 'P' : 'p');
+    bool moved;
+public:
+    Pawn(bool isWhite): Piece(isWhite) {
+        setSymbol(isWhite ? 'P' : 'p');
+        moved = false;
     }
 
-    bool isValidMove(int fromRow, int fromCol, int toRow, int toCol, Board* board){
-        if(toRow == fromRow && toCol == fromCol) return false;
+    void setMoved(bool val) { 
+        moved = val;
+    }
+
+    bool isValidMove(int fromRow, int fromCol, int toRow, int toCol, Board* board) {
+        if (toRow == fromRow && toCol == fromCol) return false;
         if (toRow < 0 || toRow >= 8 || toCol < 0 || toCol >= 8) return false;
 
-        char pawnColor = this->isWhite() ? 'W' : 'B';
-        bool firstMove = this->isMoved() ? false : true;
+        int direction = isWhite() ? 1 : -1;
+        int rowDiff = toRow - fromRow;
+        int colDiff = toCol - fromCol;
 
-        if(pawnColor == 'W'){
-        // White pawn moves from lowRow to highRow (1 -> 7)
-            int rowDiff = toRow - fromRow;
-            if(rowDiff <= 0){
-                return false;
-            }
-
-            if(firstMove && rowDiff <=2  && toCol == fromCol){
-                if(rowDiff == 2 && (board->getPieceAt(toRow,toCol) != nullptr || board->getPieceAt(fromRow + 1,toCol) != nullptr)) return false;
-                else if(rowDiff ==1 && board->getPieceAt(toRow,toCol) != nullptr) return false;
+        // Forward move
+        if (colDiff == 0) {
+            if (rowDiff == direction && board->getPieceAt(toRow, toCol) == nullptr) {
                 return true;
             }
-
-            if (rowDiff == 1 && toCol == fromCol && board->getPieceAt(toRow,toCol) == nullptr) {
-                return true;
+            if (!moved && rowDiff == 2 * direction) {
+                int midRow = fromRow + direction;
+                if (board->getPieceAt(toRow, toCol) == nullptr &&
+                    board->getPieceAt(midRow, toCol) == nullptr) {
+                    return true;
+                }
             }
-            return false;
-        }else{
-        // Black pawn moves from highRow to lowRow (6 -> 0)
-            int rowDiff = fromRow - toRow;
-            if(rowDiff <= 0){
-                return false;
-            }
-
-            if(firstMove && rowDiff <=2  && toCol == fromCol){
-                if(rowDiff == 2 && (board->getPieceAt(toRow,toCol) != nullptr || board->getPieceAt(fromRow + 1,toCol) != nullptr)) return false;
-                else if(rowDiff ==1 && board->getPieceAt(toRow,toCol) != nullptr) return false;
-                return true;
-            }
-            
-            if (rowDiff == 1 && toCol == fromCol && board->getPieceAt(toRow,toCol) == nullptr) {
-                return true;
-            }
-            return false;
         }
+
+        // Diagonal capture
+        if (abs(colDiff) == 1 && rowDiff == direction) {
+            Piece* target = board->getPieceAt(toRow, toCol);
+            if (target != nullptr && target->isWhite() != this->isWhite()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 };
 

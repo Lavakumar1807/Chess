@@ -18,11 +18,3 @@ char Piece::getSymbol(){
 void Piece::setSymbol(char symbol){
     this->symbol = symbol;
 }
-
-bool Piece::isMoved(){
-   return moved;
-}
-
-void Piece::setMoved(bool moved){
-    this->moved = moved;
-}
